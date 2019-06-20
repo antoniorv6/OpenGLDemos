@@ -1,88 +1,61 @@
-#include<iostream>
+#include <iostream>
+#include "Window.h"
+#include "Shader.h"
+#include "Mesh.h"
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+const int WIDTH = 1280, HEIGHT = 720;
 
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
+const char* vertexLocation = "Shaders/TestShader.vert";
+const char* fragmentLocation = "Shaders/TestShader.frag";
 
-#include <glm/glm.hpp>
-const GLint WIDTH = 1280, HEIGHT = 720;
+
+
+void CreateMesh(Mesh* c_mesh)
+{
+	unsigned int indices[] = {
+		0, 3, 1,
+		1, 3, 2,
+		2, 3, 0,
+		0, 1, 2
+	};
+
+	float vertices[] = {
+		-1.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 1.0f,
+		1.0f, -1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f
+	};
+
+	c_mesh->CreateMesh(vertices, indices, 12, 12);
+}
 
 int main()
 {
-	if (!glfwInit())
+	Window* l_window = new Window(WIDTH, HEIGHT);
+	Shader* l_shader = new Shader();
+	Mesh* l_mesh = new Mesh();
+
+	l_shader->CreateShaders(vertexLocation, fragmentLocation);
+
+	CreateMesh(l_mesh);
+
+	while (!l_window->WindowHasToClose())
 	{
-		std::cout << "Error initializing GLFW" << std::endl;
-		glfwTerminate();
-		return 1;
+		l_window->GetGLFWEvents();
+		l_window->ClearWindow();
+
+		l_shader->UseShader();
+		l_mesh->RenderMesh();
+
+		glUseProgram(0);
+
+		l_window->SwapBuffers();
 	}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
+	delete l_window;
+	delete l_shader;
+	delete l_mesh;
+	l_window = nullptr;
 	
-	GLFWwindow* mainWindow = glfwCreateWindow(WIDTH, HEIGHT, "Test window", NULL, NULL);
-
-	if (!mainWindow)
-	{
-		std::cout << "Window failed to be created" << std::endl;
-		glfwTerminate();
-		return 1;
-	}
-
-	int bufferWidth, bufferHeight;
-	glfwGetFramebufferSize(mainWindow, &bufferHeight, &bufferWidth);
-	glfwMakeContextCurrent(mainWindow);
-
-	glewExperimental = true;
-
-	if (glewInit() != GLEW_OK)
-	{
-		std::cout << "Glew initialization failed" << std::endl;
-		glfwDestroyWindow(mainWindow);
-		glfwTerminate();
-		return 1;
-	}
-
-	glViewport(0,0, bufferWidth, bufferHeight);
-
-	ImGui::CreateContext();
-	ImGui_ImplGlfw_InitForOpenGL(mainWindow, true);
-	ImGui_ImplOpenGL3_Init("#version 150");
-	ImGui::StyleColorsDark();
-
-	glm::vec3 newMat = glm::vec3(0,0,0);
-	std::cout << newMat.x << std::endl;
-
-	while (!glfwWindowShouldClose(mainWindow))
-	{
-		glfwPollEvents();
-
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
-		ImGui::Begin("Hello world!");
-		ImGui::End();
-
-		ImGui::Render();
-		
-		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		glfwSwapBuffers(mainWindow);
-	}
-
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
-	glfwDestroyWindow(mainWindow);
-	glfwTerminate();
-
 	return 0;
 }

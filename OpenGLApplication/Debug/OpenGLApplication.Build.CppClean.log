@@ -7,8 +7,10 @@ c:\users\admin\desktop\repasogc2019\openglapplication\debug\imgui_impl_glfw.obj
 c:\users\admin\desktop\repasogc2019\openglapplication\debug\imgui_draw.obj
 c:\users\admin\desktop\repasogc2019\openglapplication\debug\imgui_demo.obj
 c:\users\admin\desktop\repasogc2019\openglapplication\debug\imgui.obj
-c:\users\admin\desktop\repasogc2019\debug\openglapplication.ilk
+c:\users\admin\desktop\repasogc2019\openglapplication\debug\renderwindow.obj
+c:\users\admin\desktop\repasogc2019\openglapplication\debug\window.obj
 c:\users\admin\desktop\repasogc2019\debug\openglapplication.exe
+c:\users\admin\desktop\repasogc2019\debug\openglapplication.ilk
 c:\users\admin\desktop\repasogc2019\debug\openglapplication.pdb
 c:\users\admin\desktop\repasogc2019\openglapplication\debug\openglap.6cf465fb.tlog\cl.command.1.tlog
 c:\users\admin\desktop\repasogc2019\openglapplication\debug\openglap.6cf465fb.tlog\cl.read.1.tlog
