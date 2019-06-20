@@ -1,0 +1,4 @@
+﻿  main.cpp
+C:\Users\Admin\Desktop\RepasoGC2019\OpenGLUdemy\Window.h(15,34): warning C4244:  'return': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Admin\Desktop\RepasoGC2019\OpenGLUdemy\Window.h(16,35): warning C4244:  'return': conversión de 'int' a 'float'; posible pérdida de datos
+  OpenGLUdemy.vcxproj -> C:\Users\Admin\Desktop\RepasoGC2019\Debug\OpenGLUdemy.exe
