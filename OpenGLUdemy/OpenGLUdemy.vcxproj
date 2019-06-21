@@ -23,6 +23,7 @@
     <ProjectGuid>{4C6FDB78-1AF7-4E9A-A608-A046CEEDBBC9}</ProjectGuid>
     <RootNamespace>OpenGLUdemy</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>OpenGLApp</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -131,12 +132,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="IMGUIuse\imgui.cpp" />
+    <ClCompile Include="IMGUIuse\imgui_demo.cpp" />
+    <ClCompile Include="IMGUIuse\imgui_draw.cpp" />
+    <ClCompile Include="IMGUIuse\imgui_impl_glfw.cpp" />
+    <ClCompile Include="IMGUIuse\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="IMGUIuse\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="IMGUIuse\imconfig.h" />
+    <ClInclude Include="IMGUIuse\imgui.h" />
+    <ClInclude Include="IMGUIuse\imgui_impl_glfw.h" />
+    <ClInclude Include="IMGUIuse\imgui_impl_opengl3.h" />
+    <ClInclude Include="IMGUIuse\imgui_internal.h" />
+    <ClInclude Include="IMGUIuse\imstb_rectpack.h" />
+    <ClInclude Include="IMGUIuse\imstb_textedit.h" />
+    <ClInclude Include="IMGUIuse\imstb_truetype.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Window.h" />

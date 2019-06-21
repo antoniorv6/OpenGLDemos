@@ -2,23 +2,23 @@
 
 Shader::Shader()
 {
-	shaderID = 0;
-	uniformMVP = 0;
+	m_shaderID = 0;
+	m_uniformMVP = 0;
 }
 
-void Shader::CreateFromString(const char* vertexCode, const char* fragmentCode)
+void Shader::CreateFromFiles(const char* c_vertexfileLocation, const char* c_fragmentfileLocation)
 {
-	CompileShader(vertexCode, fragmentCode);
-}
+	//Guardamos dos strings con el código de nuestros shaders
+	//Why? Porque OpenGL parsea de string, mejor dicho, de punteros a caracteres, ya que tiene su propio compilador y linkador
+	std::string vertexString = ReadFile(c_vertexfileLocation);
+	std::string fragmentString = ReadFile(c_fragmentfileLocation);
+	
+	//Transformamos a const char*
+	const char * l_vertexCode = vertexString.c_str();
+	const char * l_fragmentCode = fragmentString.c_str();
 
-void Shader::CreateFromFiles(const char* vertexLocation, const char* fragmentLocation)
-{
-	std::string vertexString = ReadFile(vertexLocation);
-	std::string fragmentString = ReadFile(fragmentLocation);
-	const char * vertexCode = vertexString.c_str();
-	const char * fragmentCode = fragmentString.c_str();
-
-	CompileShader(vertexCode, fragmentCode);
+	//Entramos a la rutina de creación del shader
+	CreateShader(l_vertexCode, l_fragmentCode);
 }
 
 std::string Shader::ReadFile(const char* fileLocation)
@@ -43,53 +43,64 @@ std::string Shader::ReadFile(const char* fileLocation)
 	return content;
 }
 
+void Shader::CreateShader(const char* c_vertexCode, const char* c_fragmentCode)
+{
+	//Esta es nuestra nuestra función CORE que compilará y linkará el shader
+	//Compilamos el Shader
+	CompileShader(c_vertexCode, c_fragmentCode);
+	//Una vez compilado, hay que mapearlo en memoria --> LINKAR
+	//También validamos en esta función
+	LinkShader();
+	//Ahora que todo está bien, asignamos los uniforms que vamos a usar en los shaders
+	AssignUniforms();
+}
+
 void Shader::CompileShader(const char* vertexCode, const char* fragmentCode)
 {
 	//Obtenemos el id del programa vacio --> http://docs.gl/gl3/glCreateProgram
-	shaderID = glCreateProgram();
+	m_shaderID = glCreateProgram();
 
-	if (!shaderID)
+	if (!m_shaderID)
 	{
 		std::cout << "Error creando el programa de shader" << std::endl;
 		return;
 	}
 
 	//Añadimos nuestros Shaders al programa
-	AddShader(shaderID, vertexCode, GL_VERTEX_SHADER);
-	AddShader(shaderID, fragmentCode, GL_FRAGMENT_SHADER);
+	AddShader(m_shaderID, vertexCode, GL_VERTEX_SHADER);
+	AddShader(m_shaderID, fragmentCode, GL_FRAGMENT_SHADER);
+}
 
+void Shader::LinkShader()
+{
 	int result = 0;
 	char elog[1024] = { 0 };
 
 	//Creamos los ejecutables en la GPU --> http://docs.gl/gl3/glLinkProgram
-	glLinkProgram(shaderID);
+	glLinkProgram(m_shaderID);
 	//Obtenemos el resultado de el linkado --> http://docs.gl/gl3/glGetProgram
-	glGetProgramiv(shaderID, GL_LINK_STATUS, &result);
+	glGetProgramiv(m_shaderID, GL_LINK_STATUS, &result);
 
 	if (!result)
 	{
 		//Si falla, pillamos el log que ha dejado OpenGL con el error --> http://docs.gl/gl3/glGetProgramInfoLog
-		glGetProgramInfoLog(shaderID, sizeof(elog), NULL, elog);
+		glGetProgramInfoLog(m_shaderID, sizeof(elog), NULL, elog);
 		std::cout << "Error linkando el programa: " << *elog << std::endl;
 		return;
 	}
 
 	//Validamos el shader, por si hemos hecho algo mal --> http://docs.gl/gl3/glValidateProgram
-	glValidateProgram(shaderID);
-	glGetProgramiv(shaderID, GL_VALIDATE_STATUS, &result);
+	glValidateProgram(m_shaderID);
+	glGetProgramiv(m_shaderID, GL_VALIDATE_STATUS, &result);
 
 	if (!result)
 	{
 		//Si falla, pillamos el log que ha dejado OpenGL con el error --> http://docs.gl/gl3/glGetProgramInfoLog
-		glGetProgramInfoLog(shaderID, sizeof(elog), NULL, elog);
+		glGetProgramInfoLog(m_shaderID, sizeof(elog), NULL, elog);
 		std::cout << "Error validando el programa: " << elog << std::endl;
 		return;
 	}
-
-	//Conseguir el id del uniform en el shader --> http://docs.gl/gl3/glGetUniformLocation
-	uniformMVP = glGetUniformLocation(shaderID, "MVP");
 }
-
 
 void Shader::AddShader(unsigned int program, const char* shaderCode, GLenum shaderType)
 {
@@ -110,7 +121,7 @@ void Shader::AddShader(unsigned int program, const char* shaderCode, GLenum shad
 	//Compilamos el shader
 	glCompileShader(c_shader);
 
-	//Obtenemos el resultado de el linkado --> http://docs.gl/gl3/glGetProgram
+	//Obtenemos el resultado de la compilación --> http://docs.gl/gl3/glGetProgram
 	glGetShaderiv(c_shader, GL_COMPILE_STATUS, &result);
 
 	if (!result)
@@ -122,13 +133,26 @@ void Shader::AddShader(unsigned int program, const char* shaderCode, GLenum shad
 	}
 
 	//Juntamos el shader al programa --> http://docs.gl/gl3/glAttachShader
+	//Es decir, le decimos a OpenGL que el shader va a estar dentro del programa general
 	glAttachShader(program, c_shader);
+}
+
+void Shader::AssignUniforms()
+{
+	//Conseguir el id del uniform en el shader --> http://docs.gl/gl3/glGetUniformLocation
+	m_uniformMVP = glGetUniformLocation(m_shaderID, "MVP");
 }
 
 void Shader::SetMatrixes(glm::mat4& c_projection, glm::mat4& c_model)
 {
+	///Esto es una optimización a nivel de CPU
+	//Multiplicamos la Proyección por la Model
+	//ESTA MULTIPLICACIÓN SIEMPRE ES ASÍ
 	glm::mat4 result = c_projection * c_model;
-	glUniformMatrix4fv(uniformMVP, 1, GL_FALSE, glm::value_ptr(result));
+	
+	//Le decimos al shader que le vamos a pasar una matriz de 4*4 con floats a un uniform que tiene el ID que indicamos
+	//con m_uniformMVP
+	glUniformMatrix4fv(m_uniformMVP, 1, GL_FALSE, glm::value_ptr(result));
 }
 
 Shader::~Shader()

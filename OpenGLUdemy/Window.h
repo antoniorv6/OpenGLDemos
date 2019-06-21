@@ -12,21 +12,25 @@ public:
 
 	int Init();
 
-	float getBufferWidth()	{ return bufferWidth; }
-	float getBufferHeight()	{ return bufferHeight; }
+	float GetBufferWidth()	{ return m_bufferWidth; }
+	float GetBufferHeight()	{ return m_bufferHeight; }
 
-	bool getShouldClose()	{ return glfwWindowShouldClose(mainWindow); }
+	bool GetShouldClose()	{ return glfwWindowShouldClose(m_mainWindow); }
 
-	void swapBuffers()		{ glfwSwapBuffers(mainWindow); }
+	void SwapBuffers()		{ glfwSwapBuffers(m_mainWindow); }
+
+	void GetGLFWEvents() { glfwPollEvents();}
+
+	GLFWwindow* GetWindowptr() { return m_mainWindow; }
 
 
 	~Window();
 
 private:
-	GLFWwindow * mainWindow;
+	GLFWwindow * m_mainWindow;
 
-	int width, height;
-	int bufferWidth, bufferHeight;
+	int m_width, m_height;				//Tamaño de ventana
+	int m_bufferWidth, m_bufferHeight;	//Tamaño del buffer de renderizado (suele ser el de la ventana, pero tampoco os confiéis porque en realidad son dos cosas distintas)
 
 };
 

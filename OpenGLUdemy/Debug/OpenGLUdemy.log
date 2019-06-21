@@ -1,4 +1,5 @@
-﻿  main.cpp
-C:\Users\Admin\Desktop\RepasoGC2019\OpenGLUdemy\Window.h(15,34): warning C4244:  'return': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Admin\Desktop\RepasoGC2019\OpenGLUdemy\Window.h(16,35): warning C4244:  'return': conversión de 'int' a 'float'; posible pérdida de datos
-  OpenGLUdemy.vcxproj -> C:\Users\Admin\Desktop\RepasoGC2019\Debug\OpenGLUdemy.exe
+﻿D:\Visual Studio\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (OpenGLUdemy.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  main.cpp
+C:\Users\Antonio\Desktop\RepasoGC2019\OpenGLUdemy\Window.h(15,34): warning C4244:  'return': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Antonio\Desktop\RepasoGC2019\OpenGLUdemy\Window.h(16,35): warning C4244:  'return': conversión de 'int' a 'float'; posible pérdida de datos
+  OpenGLUdemy.vcxproj -> C:\Users\Antonio\Desktop\RepasoGC2019\Debug\OpenGLApp.exe
