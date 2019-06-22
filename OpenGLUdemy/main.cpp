@@ -9,10 +9,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "Window.h"
-
-#include "IMGUIuse/imgui.h"
-#include "IMGUIuse/imgui_impl_opengl3.h"
-#include "IMGUIuse/imgui_impl_glfw.h"
+#include "GUI.h"
 
 Mesh* mesh;
 Shader* shader;
@@ -101,75 +98,6 @@ void DeletePointers()
 	shader = nullptr;
 }
 
-void ResetImGUI()
-{
-	xTranslate = 0.0f;
-	yTranslate = 0.0f;
-	zTranslate = -2.5f;
-	rotationAngle = 0.0f;
-
-	xRotation = true;
-	yRotation = false;
-	zRotation = false;
-
-	xScale = .4f;
-	yScale = .4f;
-	zScale = .4f;
-}
-
-#pragma region IMGUIImpl
-void InitIMGUI()
-{
-	ImGui::CreateContext();
-	ImGui::StyleColorsDark();
-	ImGui_ImplGlfw_InitForOpenGL(mainWindow.GetWindowptr(), true);
-	ImGui_ImplOpenGL3_Init("#version 150");
-}
-
-void CreateIMGUIFrame()
-{
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
-}
-
-void SetImGuiInterface()
-{
-	ImGui::SetNextWindowSize(ImVec2(300, 400));
-	ImGui::Begin("Controles increibles");
-	ImGui::Text("Translacion");
-	ImGui::SliderFloat(" X", &xTranslate, -5.0f, 5.0f);
-	ImGui::SliderFloat(" Y", &yTranslate, -5.0f, 5.0f);
-	ImGui::SliderFloat(" Z", &zTranslate, -5.0f, 5.0f);
-
-	ImGui::Separator();
-	ImGui::Text("Rotacion");
-	ImGui::SliderAngle(" Angulo", &rotationAngle, -360.0f, 360.0f);
-	ImGui::Checkbox("Eje X", &xRotation);
-	ImGui::Checkbox("Eje Y", &yRotation);
-	ImGui::Checkbox("Eje Z", &zRotation);
-
-	ImGui::Separator();
-	ImGui::Text("Escalado");
-	ImGui::SliderFloat(" XS", &xScale, -5.0f, 5.0f);
-	ImGui::SliderFloat(" YS", &yScale, -5.0f, 5.0f);
-	ImGui::SliderFloat(" ZS", &zScale, -5.0f, 5.0f);
-
-	if (ImGui::Button("Reset", ImVec2(50, 30)))
-	{
-		ResetImGUI();
-	}
-
-	ImGui::End();
-}
-
-void RenderImGUI()
-{
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-#pragma endregion
-
 int main()
 {
 	mainWindow = Window(1280,720);
@@ -184,27 +112,28 @@ int main()
 	unsigned int uniformProjection = 0, uniformModel = 0;
 	// Hacer un bucle hasta que la ventana se cierre
 
-	InitIMGUI();
+	GUI ImGUIInterface = GUI(mainWindow.GetWindowptr());
 
 	while (!mainWindow.GetShouldClose())
 	{
 		//Conseguir y manejar los inputs de usuario
 		glfwPollEvents();
 
-		CreateIMGUIFrame();
-
 		/*Poner color a la ventana y limpiarla --> http://docs.gl/gl3/glClearColor
 		http://docs.gl/gl3/glClear */
 		glClearColor(0.0f,0.0f,0.0f,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Limpia tanto el buffer de color como el de profundidad
 
-		SetImGuiInterface();
+		ImGUIInterface.SetGUI();
 
+		///PROCESO DE RENDERIZADO
 		//Le decimos a OpenGL que vamos a usar estos shaders en específico --> http://docs.gl/gl3/glUseProgram
 		shader->UseShader();
-		
+
+		ImGUIInterface.SetVariables(xTranslate, yTranslate, zTranslate, rotationAngle, xRotation, yRotation, zRotation, xScale, yScale, zScale);
+
 		MakeTransformations(model);
-		
+
 		shader->SetMatrixes(projection, model);
 
 		mesh->RenderMesh();
@@ -212,7 +141,9 @@ int main()
 		//Quitamos el programa
 		glUseProgram(0);
 
-		RenderImGUI();
+		ImGUIInterface.RenderGUI();
+
+		///FIN DE PROCESO DE RENDERIZADO
 
 		//Cogemos el buffer en el que hemos pintado el color rojo y lo ponemos en la pantalla
 		//Al principio este buffer es invisible

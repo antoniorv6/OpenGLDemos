@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="IMGUIuse\imgui.cpp" />
     <ClCompile Include="IMGUIuse\imgui_demo.cpp" />
     <ClCompile Include="IMGUIuse\imgui_draw.cpp" />
@@ -144,6 +145,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GUI.h" />
     <ClInclude Include="IMGUIuse\imconfig.h" />
     <ClInclude Include="IMGUIuse\imgui.h" />
     <ClInclude Include="IMGUIuse\imgui_impl_glfw.h" />
