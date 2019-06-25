@@ -8,7 +8,7 @@
 #include <GL\glew.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/glm.hpp>
-
+#include "LightData.h"
 
 class Shader
 {
@@ -28,11 +28,20 @@ public:
 
 	unsigned int GetTextureUniform() { return m_TextureSampler; };
 
+	void SetCameraPosition(glm::vec3 c_position);
+
+	LightData GetLightData() {
+		return m_lightUniforms;
+	}
+
 	~Shader();
 
 private:
 	unsigned int m_shaderID;
-	unsigned int m_uniformMVP, m_TextureSampler;
+	unsigned int m_uniformMVP, m_TextureSampler, m_uniformModel;
+	unsigned int m_uniformCameraPos;
+	
+	LightData m_lightUniforms;
 
 	void CompileShader(const char*, const char*);
 	void CreateShader(const char*, const char*);

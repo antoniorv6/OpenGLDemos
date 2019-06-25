@@ -52,6 +52,23 @@ void GUI::SetData()
 		ResetGUI();
 	}
 
+
+	ImGui::Separator();
+	ImGui::Text("Parametros de la luz");
+	ImGui::SliderFloat(" R", &lightR, 0.0f, 1.0f);
+	ImGui::SliderFloat(" G", &lightG, 0.0f, 1.0f);
+	ImGui::SliderFloat(" B", &lightB, 0.0f, 1.0f);
+	ImGui::SliderFloat(" Ambience", &lightInt, 0.0f, 1.0f);
+
+	ImGui::SliderFloat(" LX", &lightX, -10.0f, 10.0f);
+	ImGui::SliderFloat(" LY", &lightY, -10.0f, 10.0f);
+	ImGui::SliderFloat(" LZ", &lightZ, -10.0f, 10.0f);
+
+	ImGui::SliderFloat(" Diffuse", &diffInt, 0.0f, 1.0f);
+
+	ImGui::Separator();
+	ImGui::Text("Otras cosas");
+
 	if (ImGui::Button("Habilitar culling", ImVec2(150, 30)))
 	{
 		glEnable(GL_CULL_FACE);
@@ -84,6 +101,14 @@ void GUI::ResetGUI()
 
 void GUI::RenderGUI()
 {
+	LightParameters l_newData = LightParameters();
+	l_newData.s_color = glm::vec3(lightR, lightG, lightB);
+	l_newData.s_intensity = lightInt;
+	l_newData.s_lightPos = glm::vec3(lightX, lightY, lightZ);
+	l_newData.s_diffIntensity = diffInt;
+
+	m_lightToHandle->SetNewLightData(l_newData);
+
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "GLFW/glfw3.h"
+#include "Light.h"
 class GUI
 {
 	public:
@@ -9,6 +10,9 @@ class GUI
 		void RenderGUI();
 		void ResetGUI();
 		void SetVariables(float&, float&, float&, float&, bool&, bool&, bool&, float&, float&, float&);
+		void SetLightToHandle(Light* c_lightTohandle) {
+			m_lightToHandle = c_lightTohandle;
+		}
 
 	private:
 		void SetData();
@@ -24,5 +28,17 @@ class GUI
 		float xScale = .4f;
 		float yScale = .4f;
 		float zScale = .4f;
+		
+		//Light parameters
+		float lightR = 1.0f;
+		float lightG = 1.0f;
+		float lightB = 1.0f;
+		float lightInt = 0.7f;
+		Light* m_lightToHandle;
+
+		float lightX = 0.0f;
+		float lightY = 0.0f;
+		float lightZ = 0.0f;
+		float diffInt = 0.7f;
 };
 

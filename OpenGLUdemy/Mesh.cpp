@@ -59,14 +59,18 @@ void Mesh::CreateMesh(float *vertices, unsigned int *indices, unsigned int numOf
 		Stride (Cuantos datos he de saltar para encontrar el siguiente vértice) = 5
 		Offset = 3 * tamaño del dato (es 4, un float siempre es 4, pero lo hacemos fancy porque podemos)
 	*/
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 4 * 5, 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 4 * 8, 0);
 
 	//Habilitamos el vector de atributos de vértice que acabamos de crear --> http://docs.gl/gl2/glEnableVertexAttribArray
 	glEnableVertexAttribArray(0);
 
 	//Con esto manejamos las coordenadas de textura
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * 5, (void*)(4 * 3)); //El offset hay que meterle de 3, pq si no cuenta mal
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * 8, (void*)(4 * 3)); //El offset hay que meterle de 3, pq si no cuenta mal
 	glEnableVertexAttribArray(1);
+
+	//Manejamos normales
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 4 * 8, (void*)(4 * 5));
+	glEnableVertexAttribArray(2);
 	
 	//Liberamos todo lo que hemos estado ocupando en los buffers
 	//Importante porque lo queremos usar para otras mallas y si no los liberamos... es una risa

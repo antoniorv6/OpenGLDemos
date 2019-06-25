@@ -9,6 +9,8 @@ class Camera
 		void HandleKeys(bool* c_keys);
 		void UpdateCamera();
 
+		glm::vec3 GetCameraPosition() { return m_position; };
+
 		
 	private:
 		Window* m_windowToHandle;

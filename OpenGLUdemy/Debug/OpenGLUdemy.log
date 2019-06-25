@@ -1,3 +1,8 @@
 ﻿D:\Visual Studio\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (OpenGLUdemy.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  GUI.cpp
+  Camera.cpp
+  Shader.cpp
+  main.cpp
+D:\RepasoGC2019\OpenGLUdemy\Window.h(15,34): warning C4244:  'return': conversión de 'int' a 'float'; posible pérdida de datos
+  Generando código...
+D:\RepasoGC2019\OpenGLUdemy\Window.h(16,35): warning C4244:  'return': conversión de 'int' a 'float'; posible pérdida de datos
   OpenGLUdemy.vcxproj -> D:\RepasoGC2019\Debug\OpenGLApp.exe

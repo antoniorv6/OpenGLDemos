@@ -141,7 +141,22 @@ void Shader::AssignUniforms()
 {
 	//Conseguir el id del uniform en el shader --> http://docs.gl/gl3/glGetUniformLocation
 	m_uniformMVP = glGetUniformLocation(m_shaderID, "MVP");
+	m_uniformModel = glGetUniformLocation(m_shaderID, "model");
 	m_TextureSampler = glGetUniformLocation(m_shaderID, "TextureCoordinate");
+	m_uniformCameraPos = glGetUniformLocation(m_shaderID, "eyePosition");
+
+	//Inicialización de los uniforms de las luces
+	m_lightUniforms = LightData();
+	m_lightUniforms.s_UniformAmbientColor = glGetUniformLocation(m_shaderID, "lightColor");
+	m_lightUniforms.s_UniformAmbientIntensity = glGetUniformLocation(m_shaderID, "ambientIntensity");
+	m_lightUniforms.s_UniformLightDiffuseIntesity = glGetUniformLocation(m_shaderID, "diffuseIntensity");
+	m_lightUniforms.s_UniformLightPosition = glGetUniformLocation(m_shaderID, "lightPosition");
+
+}
+
+void Shader::SetCameraPosition(glm::vec3 c_position)
+{
+	glUniform3f(m_uniformCameraPos, c_position.x, c_position.y, c_position.z);
 }
 
 void Shader::SetMatrixes(const glm::mat4& c_projection, const glm::mat4& c_model, const glm::mat4& c_view)
@@ -154,6 +169,8 @@ void Shader::SetMatrixes(const glm::mat4& c_projection, const glm::mat4& c_model
 	//Le decimos al shader que le vamos a pasar una matriz de 4*4 con floats a un uniform que tiene el ID que indicamos
 	//con m_uniformMVP
 	glUniformMatrix4fv(m_uniformMVP, 1, GL_FALSE, glm::value_ptr(result));
+	glUniformMatrix4fv(m_uniformModel, 1, GL_FALSE, glm::value_ptr(c_model));
+
 }
 
 Shader::~Shader()
