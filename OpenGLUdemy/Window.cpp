@@ -44,6 +44,10 @@ int Window::Init()
 	// Conseguir la información del tamaño de buffer --> Conseguir el tamaño que hay en el área de la ventana (main framebuffer)
 	glfwGetFramebufferSize(m_mainWindow, &m_bufferWidth, &m_bufferHeight);
 
+	// Callback para recoger inputs
+	glfwSetKeyCallback(m_mainWindow, Window::HandleKeys);
+	glfwSetWindowUserPointer(m_mainWindow, this);
+
 	// Crear el contexto con el que GLEW funcionará (Dónde va a dibujar OpenGL)
 	glfwMakeContextCurrent(m_mainWindow);
 
@@ -66,6 +70,11 @@ int Window::Init()
 	//Especificar el tamaño del Viewport con los datos que nos ha dado GLFW --> http://docs.gl/gl3/glViewport
 	//Le estamos diciendo a OpenGL qué área tiene para pintar
 	glViewport(0, 0, m_bufferWidth, m_bufferHeight);
+
+	for (int i = 0; i < 1024; i++)
+	{
+		m_keys[i] = false;
+	}
 }
 
 
@@ -74,4 +83,27 @@ Window::~Window()
 	//Destrucciones rudimentarias
 	glfwDestroyWindow(m_mainWindow);
 	glfwTerminate();
+}
+
+void Window::HandleKeys(GLFWwindow* window, int key, int code, int action, int mode)
+{
+	Window* l_Window = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(window, true);
+	}
+
+	//Controlamos las teclas que nos interesan -- W, A, S, D
+	if (key >= 0 && key < 1024)
+	{
+		if (action == GLFW_PRESS)
+		{
+			l_Window->m_keys[key] = true;
+		}
+		else if (action == GLFW_RELEASE)
+		{
+			l_Window->m_keys[key] = false;
+		}
+	}
 }

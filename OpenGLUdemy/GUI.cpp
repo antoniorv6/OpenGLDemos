@@ -47,10 +47,21 @@ void GUI::SetData()
 	ImGui::SliderFloat(" YS", &yScale, -5.0f, 5.0f);
 	ImGui::SliderFloat(" ZS", &zScale, -5.0f, 5.0f);
 
-	if (ImGui::Button("Reset", ImVec2(50, 30)))
+	if (ImGui::Button("Reset", ImVec2(70, 30)))
 	{
 		ResetGUI();
 	}
+
+	if (ImGui::Button("Habilitar culling", ImVec2(150, 30)))
+	{
+		glEnable(GL_CULL_FACE);
+	}
+
+	if (ImGui::Button("Deshabilitar culling", ImVec2(150, 30)))
+	{
+		glDisable(GL_CULL_FACE);
+	}
+
 
 	ImGui::End();
 }

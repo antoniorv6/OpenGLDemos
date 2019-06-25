@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "Texture.h"
 
 Mesh::Mesh()
 {
@@ -7,6 +8,7 @@ Mesh::Mesh()
 	IBO = 0;
 	indexCount = 0;
 	std::cout << "Objeto de Mesh creado" << std::endl;
+	m_texture = new Texture();
 }
 
 void Mesh::CreateMesh(float *vertices, unsigned int *indices, unsigned int numOfVertices, unsigned int numOfIndices)
@@ -43,19 +45,29 @@ void Mesh::CreateMesh(float *vertices, unsigned int *indices, unsigned int numOf
 	/*
 		De momento el VAO está así:
 
-			v1x | v1y | v1z | v2x | v2y | v2z ...
+			v1x | v1y | v1z | u1 | v1 | v2x | v2y | v2z | u2 | v2...
 
 		Por lo que el atributo 0, que yo asigno a los vértices en el shader [con layout(location = 0) pos] tiene las siguientes propiedades:
 		
+		Vértices:
 		Nº Datos = 3
-		Stride (Cuantos datos he de saltar para encontrar el siguiente vértice) = 0 (Porque son contínuos)
+		Stride (Cuantos datos he de saltar para encontrar el siguiente vértice) = 5 (Ojo con las coordenadas de textura)
 		Offset = 0 (Empieza al principio del vector)
-	*/
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	//Le decimos a OpenGL que esto lo vamos a usar (muy XD) --> http://docs.gl/gl2/glEnableVertexAttribArray
+		Coordenadas de textura:
+		Nº Datos = 2
+		Stride (Cuantos datos he de saltar para encontrar el siguiente vértice) = 5
+		Offset = 3 * tamaño del dato (es 4, un float siempre es 4, pero lo hacemos fancy porque podemos)
+	*/
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 4 * 5, 0);
+
+	//Habilitamos el vector de atributos de vértice que acabamos de crear --> http://docs.gl/gl2/glEnableVertexAttribArray
 	glEnableVertexAttribArray(0);
 
+	//Con esto manejamos las coordenadas de textura
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * 5, (void*)(4 * 3)); //El offset hay que meterle de 3, pq si no cuenta mal
+	glEnableVertexAttribArray(1);
+	
 	//Liberamos todo lo que hemos estado ocupando en los buffers
 	//Importante porque lo queremos usar para otras mallas y si no los liberamos... es una risa
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -63,8 +75,14 @@ void Mesh::CreateMesh(float *vertices, unsigned int *indices, unsigned int numOf
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+void Mesh::SetTexture(const char* c_fileLocation)
+{
+	m_texture->LoadTexture(c_fileLocation);
+}
+
 void Mesh::RenderMesh()
 {
+	m_texture->UseTexture();
 	///Atención porque esto es importante a la par que gracioso
 	//Le decimos a OpenGL que vamos a usar este VAO
 	glBindVertexArray(VAO);
@@ -111,5 +129,7 @@ void Mesh::ClearMesh()
 Mesh::~Mesh()
 {
 	ClearMesh();
+	delete m_texture;
+	m_texture = nullptr;
 	std::cout << "Objeto de Mesh destruido" << std::endl;
 }

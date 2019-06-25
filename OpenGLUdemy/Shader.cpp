@@ -141,14 +141,15 @@ void Shader::AssignUniforms()
 {
 	//Conseguir el id del uniform en el shader --> http://docs.gl/gl3/glGetUniformLocation
 	m_uniformMVP = glGetUniformLocation(m_shaderID, "MVP");
+	m_TextureSampler = glGetUniformLocation(m_shaderID, "TextureCoordinate");
 }
 
-void Shader::SetMatrixes(glm::mat4& c_projection, glm::mat4& c_model)
+void Shader::SetMatrixes(const glm::mat4& c_projection, const glm::mat4& c_model, const glm::mat4& c_view)
 {
 	///Esto es una optimización a nivel de CPU
 	//Multiplicamos la Proyección por la Model
 	//ESTA MULTIPLICACIÓN SIEMPRE ES ASÍ
-	glm::mat4 result = c_projection * c_model;
+	glm::mat4 result = c_projection * c_view * c_model;
 	
 	//Le decimos al shader que le vamos a pasar una matriz de 4*4 con floats a un uniform que tiene el ID que indicamos
 	//con m_uniformMVP

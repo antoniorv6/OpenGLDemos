@@ -10,11 +10,14 @@
 #include "Shader.h"
 #include "Window.h"
 #include "GUI.h"
+#include "Camera.h"
 
 Mesh* mesh;
+Mesh* mesh2;
 Shader* shader;
 
 Window mainWindow;
+Camera camera;
 
 #pragma region GUIVariables
 float xTranslate = 0.0f;
@@ -37,6 +40,8 @@ static const char* vShader = "Shaders/shader.vert";
 //Fragment Shader Location
 static const char* fShader = "Shaders/shader.frag";
 
+static const char* textureLocation = "Texture/brick.jpg";
+
 glm::mat4 model; //Matriz de transformación de nuestra malla, gracias a ella se mueve!!!!
 
 void CreateObjects()
@@ -47,16 +52,21 @@ void CreateObjects()
 		2, 3, 0,
 		0, 1, 2
 	};
-
+	
 	float vertices[] = {
-		-1.0f, -1.0f, 0.0f,
-		0.0f, -1.0f, 1.0f,
-		1.0f, -1.0f, 0.0f,
-		0.0f, 1.0f, 0.0f
-	};
+		//	 x      y     z			u     v
+			-1.0f, -1.0f, 0.0f,		0.0f, 0.0f,
+			0.0f, -1.0f, 1.0f,		0.5f, 0.0f,
+			1.0f, -1.0f, 0.0f,		1.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,		0.5f, 1.0f
+		};
 
 	mesh = new Mesh();
-	mesh->CreateMesh(vertices, indices, 12, 12);
+	mesh->CreateMesh(vertices, indices, 20, 12);
+	mesh->SetTexture(textureLocation);
+
+	mesh2 = new Mesh();
+	mesh2->CreateMesh(vertices, indices, 12, 12);
 }
 
 void CreateShaders()
@@ -93,6 +103,9 @@ void DeletePointers()
 {
 	delete mesh;
 	mesh = nullptr;
+
+	delete mesh2;
+	mesh2 = nullptr;
 	
 	delete shader;
 	shader = nullptr;
@@ -105,6 +118,8 @@ int main()
 
 	CreateObjects();
 	CreateShaders();
+
+	camera = Camera();
 
 	//fov estandar = 45.0f
 	glm::mat4 projection = glm::perspective(45.0f, mainWindow.GetBufferWidth() / mainWindow.GetBufferHeight(), 0.1f, 100.0f);
@@ -126,6 +141,9 @@ int main()
 
 		ImGUIInterface.SetGUI();
 
+		camera.HandleKeys(mainWindow.GetKeys());
+		camera.UpdateCamera();
+
 		///PROCESO DE RENDERIZADO
 		//Le decimos a OpenGL que vamos a usar estos shaders en específico --> http://docs.gl/gl3/glUseProgram
 		shader->UseShader();
@@ -134,9 +152,14 @@ int main()
 
 		MakeTransformations(model);
 
-		shader->SetMatrixes(projection, model);
+		shader->SetMatrixes(projection, model, camera.GetViewMatrix());
 
 		mesh->RenderMesh();
+
+		//glm::mat4 unity = glm::mat4(1);
+		//glm::mat4 translation2 = glm::translate(unity, glm::vec3(1.0f, 0.0f, -3.0f));
+		//shader->SetMatrixes(projection,translation2, camera.GetViewMatrix());
+		//mesh2->RenderMesh();
 		
 		//Quitamos el programa
 		glUseProgram(0);

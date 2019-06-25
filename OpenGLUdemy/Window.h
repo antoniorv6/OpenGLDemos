@@ -21,6 +21,8 @@ public:
 
 	void GetGLFWEvents() { glfwPollEvents();}
 
+	bool* GetKeys() { return m_keys; }
+
 	GLFWwindow* GetWindowptr() { return m_mainWindow; }
 
 
@@ -32,5 +34,8 @@ private:
 	int m_width, m_height;				//Tamaño de ventana
 	int m_bufferWidth, m_bufferHeight;	//Tamaño del buffer de renderizado (suele ser el de la ventana, pero tampoco os confiéis porque en realidad son dos cosas distintas)
 
+	bool m_keys[1024];
+
+	static void HandleKeys(GLFWwindow* window, int key, int code, int action, int mode);
 };
 

@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="IMGUIuse\imgui.cpp" />
     <ClCompile Include="IMGUIuse\imgui_demo.cpp" />
@@ -142,9 +143,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="IMGUIuse\imconfig.h" />
     <ClInclude Include="IMGUIuse\imgui.h" />
@@ -156,6 +159,8 @@
     <ClInclude Include="IMGUIuse\imstb_truetype.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
